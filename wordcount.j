@@ -32,3 +32,28 @@ function wcreduce(wcs...)
     end
     return counts
 end
+
+function parallel_wordcount(text)
+    lines=split(text,'\n',false)
+    np=nprocs()
+    unitsize=ceil(length(lines)/np)
+    wcounts=[]
+    rrefs=[]
+    # spawn procs
+    for i=1:np
+        first=unitsize*(i-1)+1
+        last=unitsize*i
+        if last>length(lines)
+            last=length(lines)
+        end
+        rrefs[i] = @spawn wordcount( join( lines[first:last], " " ) )
+    end
+    # fetch results
+    for i=1:np
+        wcounts[i]=rrefs[i]
+    end
+    # reduce
+    count=wcreduce(wcounts)
+    return count
+end
+
