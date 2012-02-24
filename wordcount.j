@@ -3,10 +3,10 @@ function wordcount(text)
     counts=HashTable()
     for w = words
         try
-            assign(counts,counts[w]+1,w)
+            counts[w]=counts[w]+1
         catch ex
             if typeof(ex)==KeyError
-                assign(counts,1,w)
+                counts[w]=1
             else
                 throw(ex)
             end
@@ -18,12 +18,12 @@ end
 function wcreduce(wcs...)
     counts=HashTable()
     for c = wcs
-        for k = c.keys
+        for (k,v)=c
             try
-                assign(counts,counts[k]+1,k)
+                counts[k]=counts[k]+v
             catch ex
                 if typeof(ex)==KeyError
-                    assign(counts,1,k)
+                    counts[k]=v
                 else
                     throw(ex)
                 end
