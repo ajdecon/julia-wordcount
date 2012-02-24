@@ -22,7 +22,7 @@ function wcreduce(wcs...)
             try
                 assign(counts,counts[k]+1,k)
             catch ex
-                if typeof(ex)=KeyError
+                if typeof(ex)==KeyError
                     assign(counts,1,k)
                 else
                     throw(ex)
