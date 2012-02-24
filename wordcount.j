@@ -46,7 +46,8 @@ function parallel_wordcount(text)
         if last>length(lines)
             last=length(lines)
         end
-        rrefs[i] = @spawn wordcount( join( lines[first:last], " " ) )
+        r = @spawn wordcount( join( lines[first:last], " " ) )
+        rrefs[i]=r
     end
     # fetch results
     for i=1:np
