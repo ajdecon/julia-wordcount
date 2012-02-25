@@ -38,7 +38,7 @@ function parallel_wordcount(text)
     np=nprocs()
     unitsize=ceil(length(lines)/np)
     wcounts=[]
-    rrefs=[]
+    rrefs={}
     # spawn procs
     for i=1:np
         first=unitsize*(i-1)+1
@@ -46,12 +46,11 @@ function parallel_wordcount(text)
         if last>length(lines)
             last=length(lines)
         end
-        r = @spawn wordcount( join( lines[first:last], " " ) )
-        rrefs[i]=r
+        push(rrefs, @spawn wordcount( join( lines[first:last], " " ) ) )
     end
     # fetch results
-    for i=1:np
-        wcounts[i]=rrefs[i]
+    for i=1:length(rrefs)
+        wcounts[i]=fetch(rrefs[i])
     end
     # reduce
     count=wcreduce(wcounts)
