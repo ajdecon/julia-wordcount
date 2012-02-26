@@ -1,5 +1,5 @@
 function wordcount(text)
-    words=split(text,(' ','\n','\t','-','.'',','"',':','_'),false)
+    words=split(text,(' ','\n','\t','-','.',',',':','_','"',';','!'),false)
     counts=HashTable()
     for w = words
         counts[w]=get(counts,w,0)+1
@@ -41,4 +41,3 @@ function parallel_wordcount(text)
     count=wcreduce(wcounts)
     return count
 end
-
