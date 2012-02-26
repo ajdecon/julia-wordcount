@@ -1,5 +1,5 @@
 function wordcount(text)
-    words=split(text,(' ','\n','\t'),false)
+    words=split(text,(' ','\n','\t','-','.'',','"',':','_'),false)
     counts=HashTable()
     for w = words
         counts[w]=get(counts,w,0)+1
@@ -7,7 +7,7 @@ function wordcount(text)
     return counts
 end
 
-function wcreduce(wcs...)
+function wcreduce(wcs)
     counts=HashTable()
     for c = wcs
         for (k,v)=c
@@ -21,7 +21,7 @@ function parallel_wordcount(text)
     lines=split(text,'\n',false)
     np=nprocs()
     unitsize=ceil(length(lines)/np)
-    wcounts=[]
+    wcounts={}
     rrefs={}
     # spawn procs
     for i=1:np
@@ -30,11 +30,12 @@ function parallel_wordcount(text)
         if last>length(lines)
             last=length(lines)
         end
-        push(rrefs, @spawn wordcount( join( lines[first:last], " " ) ) )
+        subtext=join(lines[int(first):int(last)],"\n")
+        push(rrefs, @spawn wordcount( subtext ) )
     end
     # fetch results
-    for i=1:length(rrefs)
-        wcounts[i]=fetch(rrefs[i])
+    while length(rrefs)>0
+        push(wcounts,fetch(pop(rrefs)))
     end
     # reduce
     count=wcreduce(wcounts)
