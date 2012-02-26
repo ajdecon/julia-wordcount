@@ -58,3 +58,21 @@ function parallel_wordcount(text)
     count=wcreduce(wcounts)
     return count
 end
+
+# Takes the name of a result file, and a list of input file names.
+# Combines the contents of all files, then performs a parallel_wordcount
+# on the resulting string. Writes the results to result_file.
+# Limitation: Performs all file IO single-threaded.
+function wordcount_files(result_file,input_file_names...)
+    text=""
+    for f = input_file_names
+        fh=open(f)
+        text=join( {text,readall(fh)}, "\n" )
+        close(fh)
+    end
+    wc=parallel_wordcount(text)
+    fo=open(result_file,"w")
+    for (k,v) = wc
+        with_output_stream(fo,println,k,"=",v)
+    end
+end
