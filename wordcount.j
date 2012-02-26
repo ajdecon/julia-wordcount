@@ -1,3 +1,12 @@
+# wordcount.j
+#   
+# Implementation of parallelized "word-count" of a text, inspired by the 
+# Hadoop WordCount example. Uses @spawn and fetch() to parallelize 
+# tasks.
+
+# "Map" function.
+# Takes a string. Returns a HashTable with the number of times each word 
+# appears in that string.
 function wordcount(text)
     words=split(text,(' ','\n','\t','-','.',',',':','_','"',';','!'),false)
     counts=HashTable()
@@ -7,6 +16,10 @@ function wordcount(text)
     return counts
 end
 
+# "Reduce" function.
+# Takes a collection of HashTables in the format returned by wordcount()
+# Returns a HashTable in which words that appear in multiple inputs
+# have their totals added together.
 function wcreduce(wcs)
     counts=HashTable()
     for c = wcs
@@ -17,6 +30,10 @@ function wcreduce(wcs)
     return counts
 end
 
+# Splits input string into nprocs() equal-sized chunks (last one rounds up), 
+# and @spawns wordcount() for each chunk to run in parallel. Then fetch()s
+# results and performs wcreduce().
+# Limitations: splitting the string and reduction step are single-threaded.
 function parallel_wordcount(text)
     lines=split(text,'\n',false)
     np=nprocs()
