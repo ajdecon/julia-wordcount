@@ -1,1 +1,11 @@
 An attempt at a basic parallel word-count program, using the new Julia language.
+
+Example run:
+
+Using http://norvig.com/big.txt,
+julia -p 4 wcfile.j: 35.2 s
+julia -p 1 wcfile.j: 52.3 s
+speedup = 1.49
+estimated parallel part (amdahl's law): 32.6%
+
+The single-threaded reduce and file IO are the killers here, most likely.
