@@ -8,8 +8,8 @@
 # Takes a string. Returns a HashTable with the number of times each word 
 # appears in that string.
 function wordcount(text)
-    words=split(text,(' ','\n','\t','-','.',',',':','_','"',';','!'),false)
-    counts=HashTable()
+    words=split(text,(' ','\n','\t','-','.',',',':','_','"',';','!'))
+    counts=Dict()
     for w = words
         counts[w]=get(counts,w,0)+1
     end
@@ -21,7 +21,7 @@ end
 # Returns a HashTable in which words that appear in multiple inputs
 # have their totals added together.
 function wcreduce(wcs)
-    counts=HashTable()
+    counts=Dict()
     for c = wcs
         for (k,v)=c
             counts[k] = get(counts,k,0)+v
